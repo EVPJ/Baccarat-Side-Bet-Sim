@@ -1,3 +1,4 @@
+// this includes a cut card at 14 cards and plays through the whole shoe
 #include <iostream>
 #include <cstdlib> //for rand and srand
 #include <bits/stdc++.h>
