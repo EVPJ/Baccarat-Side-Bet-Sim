@@ -12,12 +12,14 @@ using namespace std;
 
 void shuffle(vector<int> array, int length);
 
-int playerGamler = 20000000;
+int playerGamler = 4000;
 int bankerGambler = 20000000;
 const bool kickrRules = true;
+bool wentBroke = false;
+int brokeCounter = 0;
 
 // declare consts
-const int NUMBER_OF_SIMULATED_SHOES = 30000000;
+const int NUMBER_OF_SIMULATED_SHOES = 50000;
 
 //"Ace", "Two", "Three", "Four","Five", "Six", "Seven", "Eight", "Nine", "Zero"
 std::vector<int> shoeCards = {
@@ -762,15 +764,31 @@ string drawHand()
 	// continue play if player stands
 	else if (playerTotal > 5)
 	{
-		if (bankerTotal < 6)
+		if (kickrRules)
 		{
-			bankerCardThree = getcard();
-			bankerTotal = (bankerTotal + bankerCardThree) % 10;
-			return (returnResult());
+			if (bankerTotal < 4)
+			{
+				bankerCardThree = getcard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
 		}
 		else
 		{
-			return (returnResult());
+			if (bankerTotal < 6)
+			{
+				bankerCardThree = getcard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
 		}
 	}
 	// continue play if player draws
@@ -846,36 +864,48 @@ string drawHand()
 int main()
 {
 	srand(time(0));
-
-	for (int i = 0; i < NUMBER_OF_SIMULATED_SHOES; i++)
+	for (int i = 0; i < 100; i++)
 	{
-
-		string drawnHandForCycle = drawHand();
-		if (drawnHandForCycle == "Banker")
+		if (wentBroke)
 		{
-			bankerWins++;
-			playerGamler = playerGamler - 20;
-			bankerGambler = bankerGambler + 19;
+			brokeCounter++;
 		}
-		else if (drawnHandForCycle == "Player")
-		{
-			playerWins++;
-			playerGamler = playerGamler + 20;
-			bankerGambler = bankerGambler - 20;
-		}
-		else if (drawnHandForCycle == "Tie")
-		{
-			tieWins++;
-		}
+		playerGamler = 4000;
+		wentBroke = false;
 
-		shuffleShoe();
-		/* cout << "\nplayer1: " << playerCardOne;
-		cout << "\nplayer2: " << playerCardTwo;
-		cout << "\nbanker1: " << bankerCardOne;
-		cout << "\nbanker2: " << bankerCardTwo;
+		for (int i = 0; i < NUMBER_OF_SIMULATED_SHOES; i++)
+		{
 
-		cout << "\nplayer3: " << playerCardThree;
-		cout << "\nbanker3: " << bankerCardThree; */
+			string drawnHandForCycle = drawHand();
+			if (drawnHandForCycle == "Banker")
+			{
+				bankerWins++;
+				playerGamler = playerGamler - 20;
+				bankerGambler = bankerGambler + 19;
+			}
+			else if (drawnHandForCycle == "Player")
+			{
+				playerWins++;
+				playerGamler = playerGamler + 20;
+				bankerGambler = bankerGambler - 20;
+			}
+			else if (drawnHandForCycle == "Tie")
+			{
+				tieWins++;
+			}
+			if (playerGamler < 0)
+			{
+				wentBroke = true;
+			}
+			shuffleShoe();
+			/* cout << "\nplayer1: " << playerCardOne;
+			cout << "\nplayer2: " << playerCardTwo;
+			cout << "\nbanker1: " << bankerCardOne;
+			cout << "\nbanker2: " << bankerCardTwo;
+
+			cout << "\nplayer3: " << playerCardThree;
+			cout << "\nbanker3: " << bankerCardThree; */
+		}
 	}
 	cout << "\n banker wins: " << bankerWins;
 	cout << "\n player wins: " << playerWins;
@@ -887,4 +917,5 @@ int main()
 
 	cout << "\n always bet on banker result: " << bankerGambler;
 	cout << "\n are kickr rules enabled: " << kickrRules;
+	cout << "\n # of times went broke: " << brokeCounter;
 }
