@@ -1,0 +1,1337 @@
+// this includes a cut card at 14 cards and plays through the whole shoe
+#include <iostream>
+#include <cstdlib> //for rand and srand
+#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <chrono>
+
+using namespace std;
+
+void shuffle(vector<int> array, int length);
+
+// declare const
+const int NUMBER_OF_SIMULATED_SHOES = 100000;
+const int STARTING_BANKROLL = 3750;
+
+int bankroll = STARTING_BANKROLL;
+
+bool betBlazing7 = false;
+int runningCountBlazing7 = 0;
+int placedBetBlazing7 = 0;
+
+bool betDragon7 = false;
+int runningCountDragon7 = 0;
+int placedBetDragon7 = 0;
+
+bool betCoverAll = true;
+int runningCountCoverAll = 0;
+int placedBetCoverAll = 0;
+
+int burning = 0;
+double trueCount = 0;
+bool wentBroke = false;
+int timesWentBroke = 0;
+
+//"Ace", "Two", "Three", "Four","Five", "Six", "Seven", "Eight", "Nine", "Zero"
+std::vector<int> shoeCards = {
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+	1,
+	2,
+	3,
+	4,
+	5,
+	6,
+	7,
+	8,
+	9,
+	0,
+	0,
+	0,
+	0,
+};
+
+int cutCardStatus = 0; // can be either 0"Inside", 1"Outside", 2"Complete"
+int bankerWins = 0;
+int playerWins = 0;
+int tieWins = 0;
+int firsttimerun = true;
+int wtf = 0;
+
+int playerCardOne = 0;
+int playerCardTwo = 0;
+int bankerCardOne = 0;
+int bankerCardTwo = 0;
+int bankerCardThree = -1;
+int playerCardThree = -1;
+// define starting 2 card totals
+int playerTotal = 0;
+int bankerTotal = 0;
+
+// return a random card and remove it from the shoe
+//
+//---------------------DEFAULT--------------
+//
+
+// function to return sum of elements
+// in an array of size n
+
+int shoeSize()
+{
+	return shoeCards.size();
+}
+
+// return a random card and remove it from the shoe
+//
+//---------------------DEFAULT--------------
+//
+int getCard()
+{
+	int tempCard = shoeCards.front();
+	shoeCards.erase(shoeCards.begin());
+	if (betBlazing7)
+	{
+		if (tempCard < 2)
+		{
+			runningCountBlazing7++;
+		}
+		else if (tempCard > 7)
+		{
+			runningCountBlazing7 += 2;
+		}
+		else if (tempCard == 7)
+		{
+			runningCountBlazing7 -= 6;
+		}
+		else if (tempCard == 3 || tempCard == 4 || tempCard == 5)
+		{
+			runningCountBlazing7--;
+		}
+	}
+	if (betDragon7)
+	{
+		if (tempCard > 3 && tempCard < 8)
+		{
+			runningCountDragon7--;
+		}
+		else if (tempCard == 8 || tempCard == 9)
+		{
+			runningCountDragon7 += 2;
+		}
+	}
+	if (betCoverAll)
+	{
+		if (tempCard > 3 && tempCard < 7)
+		{
+			runningCountCoverAll--;
+		}
+		else if (tempCard < 2)
+		{
+			runningCountCoverAll++;
+		}
+		else if (tempCard == 7)
+		{
+			runningCountCoverAll--;
+			runningCountCoverAll--;
+		}
+	}
+
+	return tempCard;
+}
+void shuffleShoe()
+{
+	runningCountBlazing7 = 0;
+	runningCountDragon7 = 0;
+	runningCountCoverAll = 0;
+	shoeCards = {
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		0,
+		0,
+		0,
+		0,
+
+	};
+	// srand(time(NULL));
+
+	// for each element in the array, randomly swap it with an element in the
+	// array, possibly even itself (it's possible when shuffling a deck of cards
+	// that a card ends up in the same spot it started in)
+
+	std::random_shuffle(shoeCards.begin(), shoeCards.end());
+	cutCardStatus = 0;
+	burning = getCard();
+	if (burning == 0)
+	{
+		burning = 10;
+	}
+	runningCountBlazing7 = 0;
+	for (int i = 0; i < burning; i++)
+	{
+		getCard();
+	}
+}
+
+string returnResult()
+{
+	if (placedBetBlazing7 > 0)
+	{
+		if (playerTotal == 7 && bankerTotal == 7 && playerCardThree == -1 && bankerCardThree == -1)
+		{
+			bankroll += (2550);
+		}
+		else if (playerTotal == 7 && bankerTotal == 7 && playerCardThree > -1 && bankerCardThree > -1)
+		{
+			bankroll += (201 * placedBetBlazing7);
+		}
+	}
+	if (placedBetDragon7 > 0)
+	{
+		if (playerTotal < bankerTotal && bankerTotal == 7 && bankerCardThree > -1)
+		{
+			bankroll += (41 * placedBetDragon7);
+		}
+	}
+	if (placedBetCoverAll > 0)
+	{
+		if ((playerTotal == 7 && bankerTotal == 7 && playerCardThree == -1 && bankerCardThree == -1) ||
+			(playerTotal == 7 && bankerTotal == 7 && playerCardThree > -1 && bankerCardThree > -1) ||
+			(playerTotal < bankerTotal && bankerTotal == 7 && bankerCardThree > -1) ||
+			(playerTotal > bankerTotal && playerTotal == 8 && playerCardThree > -1) ||
+			(playerTotal == 9 && playerCardThree > -1) || (bankerTotal == 9 && bankerCardThree > -1))
+		{
+			bankroll += (7 * placedBetCoverAll);
+		}
+	}
+	placedBetBlazing7 = 0;
+	placedBetDragon7 = 0;
+	placedBetCoverAll = 0;
+
+	if (playerTotal < bankerTotal)
+	{
+		playerCardThree = -1;
+		bankerCardThree = -1;
+
+		return "Banker";
+	}
+	else if (playerTotal > bankerTotal)
+	{
+		playerCardThree = -1;
+		bankerCardThree = -1;
+
+		return "Player";
+	}
+	else
+	{
+		playerCardThree = -1;
+		bankerCardThree = -1;
+		return "Tie";
+	}
+
+	/*
+		cout << "player1: " << playerCardOne;
+		cout << "player2: " << playerCardTwo;
+		cout << "banker1: " << bankerCardOne;
+		cout << "banker2: " << bankerCardTwo;
+
+		cout << "player3: " << playerCardThree;
+		cout << "banker3: " << bankerCardThree;
+	*/
+}
+
+string drawHand()
+{
+	// define starting 4 cards
+	playerCardOne = getCard();
+	playerCardTwo = getCard();
+	bankerCardOne = getCard();
+	bankerCardTwo = getCard();
+	// define starting 2 card totals
+
+	playerTotal = ((playerCardOne + playerCardTwo) % 10);
+	bankerTotal = ((bankerCardOne + bankerCardTwo) % 10);
+	// define return statement
+
+	// check for natural
+	if (playerTotal >= 8 || bankerTotal >= 8)
+	{
+		return (returnResult());
+	}
+	// continue play if player stands
+	else if (playerTotal > 5)
+	{
+		if (bankerTotal < 6)
+		{
+			bankerCardThree = getCard();
+			bankerTotal = (bankerTotal + bankerCardThree) % 10;
+			return (returnResult());
+		}
+		else
+		{
+			return (returnResult());
+		}
+	}
+	// continue play if player draws
+	else
+	{
+		playerCardThree = getCard();
+		playerTotal = (playerTotal + playerCardThree) % 10;
+		if (bankerTotal < 3)
+		{
+			bankerCardThree = getCard();
+			bankerTotal = (bankerTotal + bankerCardThree) % 10;
+			return (returnResult());
+		}
+		else if (bankerTotal == 3)
+		{
+			if (playerCardThree != 8)
+			{
+				bankerCardThree = getCard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
+		}
+		else if (bankerTotal == 4)
+		{
+			if (playerCardThree > 1 && playerCardThree < 8)
+			{
+				bankerCardThree = getCard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
+		}
+		else if (bankerTotal == 5)
+		{
+			if (playerCardThree > 3 && playerCardThree < 8)
+			{
+				bankerCardThree = getCard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
+		}
+		else if (bankerTotal == 6)
+		{
+			if (playerCardThree > 5 && playerCardThree < 8)
+			{
+				bankerCardThree = getCard();
+				bankerTotal = (bankerTotal + bankerCardThree) % 10;
+				return (returnResult());
+			}
+			else
+			{
+				return (returnResult());
+			}
+		}
+		else
+		{
+			return (returnResult());
+		}
+	}
+}
+void placeSideBet_blazing7()
+{
+
+	if (runningCountBlazing7 > 0)
+	{
+		if ((shoeCards.size() / 52) < 1)
+		{
+			if (runningCountBlazing7 > 5)
+			{
+				bankroll -= 50;
+				placedBetBlazing7 = 50;
+			}
+		}
+		else
+		{
+			if ((runningCountBlazing7 / (shoeCards.size() / 52)) > 5)
+			{
+				bankroll -= 50;
+				placedBetBlazing7 = 50;
+			}
+		}
+	}
+}
+
+void placeSideBet_dragon7()
+{
+
+	if (runningCountDragon7 > 0)
+	{
+		if ((shoeCards.size() / 52) < 1)
+		{
+			if (runningCountDragon7 > 6)
+			{
+				bankroll -= 50;
+				placedBetCoverAll = 50;
+			}
+		}
+		else
+		{
+			if ((runningCountDragon7 / (shoeCards.size() / 52)) > 6)
+			{
+				bankroll -= 50;
+				placedBetCoverAll = 50;
+			}
+		}
+	}
+}
+void placeSideBet_coverAll()
+{
+
+	if (runningCountCoverAll > 0)
+	{
+		if ((shoeCards.size() / 52) < 1)
+		{
+			if (runningCountCoverAll > 2)
+			{
+				bankroll -= 50;
+				placedBetCoverAll = 50;
+			}
+		}
+		else
+		{
+			if ((runningCountCoverAll / (shoeCards.size() / 52)) > 2)
+			{
+				bankroll -= 50;
+				placedBetCoverAll = 50;
+			}
+		}
+	}
+}
+
+int main()
+{
+
+	srand(time(0));
+	// for (int a = 0; a < 1; a++)
+	//{
+	if (wentBroke)
+	{
+		timesWentBroke++;
+	}
+	bankroll = STARTING_BANKROLL;
+	wentBroke = false;
+
+	for (int i = 0; i < NUMBER_OF_SIMULATED_SHOES; i++)
+	{
+		while (cutCardStatus < 1)
+		{
+			// cout << runningCountCoverAll << "\n";
+			// cout << bankroll << "\n";
+			if (betBlazing7)
+			{
+				placeSideBet_blazing7();
+			}
+			if (betDragon7)
+			{
+				placeSideBet_dragon7();
+			}
+			if (betCoverAll)
+			{
+				placeSideBet_coverAll();
+			}
+			string drawnHandForCycle = drawHand();
+
+			if (drawnHandForCycle == "Banker")
+			{
+				bankerWins++;
+			}
+			else if (drawnHandForCycle == "Player")
+			{
+				playerWins++;
+			}
+			else if (drawnHandForCycle == "Tie")
+			{
+				tieWins++;
+			}
+			else
+			{
+				wtf++;
+			}
+
+			if (shoeSize() < 14)
+			{
+
+				cutCardStatus++;
+			}
+			// if (bankroll < 0)
+			//{
+			//	wentBroke = true;
+			//	cout << "wentbroke";
+			// }
+
+			/* cout << "\nplayer1: " << playerCardOne;
+			cout << "\nplayer2: " << playerCardTwo;
+			cout << "\nbanker1: " << bankerCardOne;
+			cout << "\nbanker2: " << bankerCardTwo;
+
+			cout << "\nplayer3: " << playerCardThree;
+			cout << "\nbanker3: " << bankerCardThree; */
+		}
+		shuffleShoe();
+	}
+	//}
+
+	/* 	string drawnHandForCycle = drawHand();
+		if (drawnHandForCycle == "Banker")
+		{
+			bankerWins++;
+		}
+		else if (drawnHandForCycle == "Player")
+		{
+			playerWins++;
+		}
+		else if (drawnHandForCycle == "Tie")
+		{
+			tieWins++;
+		}
+		else
+		{
+			wtf++;
+		}
+		if (shoeSize() < 14)
+		{
+			cutCardStatus++;
+		}
+
+		cout << "\nplayer1: " << playerCardOne;
+		cout << "\nplayer2: " << playerCardTwo;
+		cout << "\nbanker1: " << bankerCardOne;
+		cout << "\nbanker2: " << bankerCardTwo;
+
+		cout << "\nplayer3: " << playerCardThree;
+		cout << "\nbanker3: " << bankerCardThree; */
+
+	cout << "\n banker wins: " << bankerWins;
+	cout << "\n player wins: " << playerWins;
+	cout << "\n tie wins: " << tieWins;
+	cout << "\n wtf: " << wtf;
+	cout << "\n total: " << bankerWins + playerWins + tieWins;
+	cout << "\n bankroll: " << bankroll;
+	cout << "\n how many times went broke: " << timesWentBroke;
+}
